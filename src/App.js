@@ -8,7 +8,6 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { ChromePicker } from "react-color";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -227,10 +226,6 @@ class MyComponent extends PureComponent {
 class ColorPickerInFigure extends MyComponent {
   constructor(props) {
     super(props);
-
-    this.state = {
-      editMode: false
-    };
   }
 
   render() {
@@ -238,37 +233,20 @@ class ColorPickerInFigure extends MyComponent {
       <CustomFigure
         matched={this.props.matched}
         color={this.props.color}
-        caption={
-          <Fragment>
-            {this.props.caption}
-            <Button
-              style={{
-                display: "inline",
-                fontSize: "inherit",
-                padding: 0,
-                paddingLeft: "5px",
-                border: 0,
-                lineHeight: "unset",
-                verticalAlign: "unset"
-              }}
-              variant="link"
-              onClick={() =>
-                this.setStateIfChanged("editMode", !this.state.editMode)
-              }
-            >
-              {this.state.editMode ? "Done" : "Edit"}
-            </Button>
-          </Fragment>
-        }
+        caption={this.props.caption}
       >
-        {this.state.editMode && (
-          <ChromePicker
-            disableAlpha={true}
-            color={this.props.color}
-            onChange={this.props.handleColorChange}
-            matched={this.props.matched}
-          ></ChromePicker>
-        )}
+        <input
+          style={{
+            width: "100%",
+            height: "100%",
+            opacity: 0,
+            cursor: "pointer"
+          }}
+          type="color"
+          onChange={this.props.handleValueChange}
+          value={this.props.color}
+          name={this.props.name}
+        />
       </CustomFigure>
     );
   }
@@ -428,9 +406,7 @@ class Settings extends MyComponent {
     }
 
     return (
-      <NewWindow
-        onUnload={this.props.closeSettingsMenu}
-      >
+      <NewWindow onUnload={this.props.closeSettingsMenu}>
         <Card
           style={{
             userSelect: "none"
@@ -475,7 +451,8 @@ class Settings extends MyComponent {
                     Target color <span className="text-monospace">0</span>
                   </Fragment>
                 }
-                handleColorChange={this.props.handleTargetColor0Change}
+                handleValueChange={this.props.handleValueChange}
+                name={"targetColor0"}
               ></ColorPickerInFigure>
 
               <ColorPickerInFigure
@@ -486,7 +463,8 @@ class Settings extends MyComponent {
                     Target color <span className="text-monospace">1</span>
                   </Fragment>
                 }
-                handleColorChange={this.props.handleTargetColor1Change}
+                handleValueChange={this.props.handleValueChange}
+                name={"targetColor1"}
               ></ColorPickerInFigure>
             </div>
             <div className="clearfix">
@@ -971,14 +949,6 @@ class App extends MyComponent {
     this.menu.getMenuItemById(key).checked = value;
   };
 
-  handleTargetColor0Change = color => {
-    this.setStateIfChanged("targetColor0", color.hex);
-  };
-
-  handleTargetColor1Change = color => {
-    this.setStateIfChanged("targetColor1", color.hex);
-  };
-
   handleCheckboxChange = event => {
     const target = event.target;
     const checked = target.checked;
@@ -1029,9 +999,7 @@ class App extends MyComponent {
             color={this.state.color}
             triggerState={this.state.triggerState}
             targetColor0={this.state.targetColor0}
-            handleTargetColor0Change={this.handleTargetColor0Change}
             targetColor1={this.state.targetColor1}
-            handleTargetColor1Change={this.handleTargetColor1Change}
             handleCheckboxChange={this.handleCheckboxChange}
             handleValueChange={this.handleValueChange}
             serverEnabled={this.state.serverEnabled}
