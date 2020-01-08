@@ -1,0 +1,74 @@
+{
+  "name": "screen-breach-sensor",
+  "productName": "Screen Breach Sensor",
+  "description": "Drag a rectangle over your screen to sense the average colour, and send the data via Bluetooth to trigger actions.",
+  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "Jip de Beer",
+    "email": "Jip@deBeer.IT",
+    "url": "https://Jip.deBeer.IT"
+  },
+  "build": {
+    "appId": "it.debeer.screen-breach-sensor",
+    "productName": "Screen Breach Sensor",
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jip-Hop/Screen-Breach-Sensor.git"
+  },
+  "homepage": "./",
+  "main": "public/electron.js",
+  "scripts": {
+    "start": "rescripts start",
+    "build": "rescripts build",
+    "test": "rescripts test",
+    "eject": "react-scripts eject",
+    "electron-dev": "concurrently \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "postinstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "electron-builder -mw"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "dependencies": {
+    "electron-store": "^5.1.0"
+  },
+  "devDependencies": {
+    "@rescripts/cli": "^0.0.13",
+    "@rescripts/rescript-env": "^0.0.11",
+    "bootstrap": "^4.4.1",
+    "chroma-js": "^2.1.0",
+    "concurrently": "^5.0.2",
+    "cross-env": "^6.0.3",
+    "electron": "^7.1.7",
+    "electron-builder": "^21.2.0",
+    "fast-average-color": "^6.0.1",
+    "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-color": "^2.17.3",
+    "react-dom": "^16.12.0",
+    "react-new-window": "^0.1.2",
+    "react-scripts": "3.3.0",
+    "typescript": "^3.7.4",
+    "wait-on": "^3.3.0"
+  }
+}

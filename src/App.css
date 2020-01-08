@@ -1,0 +1,39 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,
+body,
+#root
+{
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.card > .card-body {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.card > .card-body figure:not(:last-of-type) {
+  margin-right: 25px;
+}
+
+*[disabled] {
+  cursor: default;
+}
+
+.custom-switch > label {
+  cursor: pointer;
+}

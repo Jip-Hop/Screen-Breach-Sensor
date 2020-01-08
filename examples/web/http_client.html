@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>jQuery example</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"
+    ></script>
+
+    <style id="compiled-css" type="text/css">
+      body {
+        background: #20262e;
+        padding: 20px;
+        font-family: Helvetica;
+      }
+
+      #banner-message {
+        background: #fff;
+        font-size: 25px;
+        text-align: center;
+        margin: 0 auto;
+        width: 250px;
+        height: 250px;
+        line-height: 250px;
+        border: 1px solid transparent;
+      }
+    </style>
+
+    <script type="text/javascript">
+      let portNumber = 8124;
+      
+      function invertHex(hex) {
+        return (
+          "#" +
+          (Number(`0x1${hex.substring(1)}`) ^ 0xffffff)
+            .toString(16)
+            .substr(1)
+            .toUpperCase()
+        );
+      }
+
+      window.onload = function() {
+        // find elements
+        var banner = $("#banner-message");
+
+        function callNode() {
+          $.ajax({
+            cache: false,
+            // setup the server address
+            url: `http://localhost:${portNumber}`,
+            data: {},
+            success: function(response, code, xhr) {
+              var data = JSON.parse(response);
+              var invertedColor = invertHex(data.color);
+              banner.css({
+                backgroundColor: data.color,
+                borderColor: invertedColor,
+                color: invertedColor
+              });
+              banner.text(data.state);
+            },
+            complete: function(xhr, code) {
+              if (code === "success") {
+                // make new call right away
+                callNode();
+              } else {
+                // try again later
+                setTimeout(callNode, 1000);
+              }
+            }
+          });
+        }
+        callNode();
+      };
+    </script>
+  </head>
+  <body>
+    <div id="banner-message"></div>
+  </body>
+</html>
