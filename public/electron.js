@@ -130,7 +130,7 @@ if (!gotTheLock) {
     }
   }
 
-  function isFullyContainedInDisplay(winBounds, win, clamp) {
+  function isFullyContainedInDisplay(winBounds, win, shouldClamp) {
     if (!winBounds) {
       winBounds = win.getBounds();
     }
@@ -146,7 +146,7 @@ if (!gotTheLock) {
       newBounds.y === winBounds.y;
     if (fullyContained) {
       return winBounds;
-    } else if (clamp) {
+    } else if (shouldClamp) {
       win.setBounds(newBounds);
       return newBounds;
     } else {

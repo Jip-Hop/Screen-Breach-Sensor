@@ -742,7 +742,6 @@ class App extends MyComponent {
 
           const video = _this.video;
 
-          // video.ontimeupdate = function() {
           _this.fpsTimer = setInterval(function () {
             const currentDisplay = screen.getDisplayMatching(
               currentWindow.getBounds()
