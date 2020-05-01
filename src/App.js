@@ -730,7 +730,7 @@ class App extends MyComponent {
               mandatory: {
                 chromeMediaSource: "desktop",
                 chromeMediaSourceId: source.id,
-                maxFrameRate: 1,
+                maxFrameRate: 30,
                 maxWidth: _this.currentDisplay.size.width,
                 maxHeight: _this.currentDisplay.size.height,
                 minWidth: _this.currentDisplay.size.width,
