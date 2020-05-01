@@ -29,25 +29,72 @@ function clamp(value, min, max) {
 }
 
 function getClampedRect(rect, bounds) {
-  var w = rect.width,
-    h = rect.height;
-  var maxWidth = bounds.width,
-    maxHeight = bounds.height;
-  var ratio = w / h;
-  if (w > maxWidth) {
-    w = maxWidth;
-    h = ~~(w / ratio);
+  const rectLeft = rect.x;
+  const rectRight = rect.x + rect.width;
+  const rectTop = rect.y;
+  const rectBottom = rect.y + rect.height;
+
+  const boundsLeft = bounds.x;
+  const boundsRight = bounds.x + bounds.width;
+  const boundsTop = bounds.y;
+  const boundsBottom = bounds.y + bounds.height;
+
+  const leftDifference = rectLeft - boundsLeft; // should be >= 0
+  const rightDifference = boundsRight - rectRight; // should be >= 0
+  const topDifference = rectTop - boundsTop; // should be >= 0
+  const bottomDifference = boundsBottom - rectBottom; // should be >= 0
+
+  var newRectLeft = rectLeft;
+  var newRectRight = rectRight;
+  var newRectTop = rectTop;
+  var newRectBottom = rectBottom;
+
+  // Move back to be contained in bounds
+  if (leftDifference < 0) {
+    newRectLeft = boundsLeft;
+    newRectRight -= leftDifference;
   }
-  if (h > maxHeight) {
-    h = maxHeight;
-    w = ~~(h * ratio);
+
+  if (rightDifference < 0) {
+    newRectRight = boundsRight;
+    newRectLeft += rightDifference;
   }
-  return {
-    x: bounds.x + Math.max(0, Math.min(rect.x, maxWidth - w)),
-    y: bounds.y + Math.max(0, Math.min(rect.y, maxHeight - h)),
-    width: w,
-    height: h
+
+  if (topDifference < 0) {
+    newRectTop = boundsTop;
+    newRectBottom -= topDifference;
+  }
+
+  if (bottomDifference < 0) {
+    newRectBottom = boundsBottom;
+    newRectTop += bottomDifference;
+  }
+
+  // Clamp to bounds if bigger
+  if (newRectLeft < boundsLeft) {
+    newRectLeft = boundsLeft;
+  }
+
+  if (newRectRight > boundsRight) {
+    newRectRight = boundsRight;
+  }
+
+  if (newRectTop < newRectTop) {
+    newRectTop = newRectTop;
+  }
+
+  if (newRectBottom > boundsBottom) {
+    newRectBottom = boundsBottom;
+  }
+
+  const newBounds = {
+    x: newRectLeft,
+    y: newRectTop,
+    width: newRectRight - newRectLeft,
+    height: newRectBottom - newRectTop,
   };
+
+  return newBounds;
 }
 
 if (!gotTheLock) {
@@ -100,21 +147,21 @@ if (!gotTheLock) {
     if (!winBounds) {
       winBounds = win.getBounds();
     }
+
     const currentDisplay = screen.getDisplayMatching(winBounds);
-    const newBounds = getClampedRect(winBounds, currentDisplay.bounds);
+    const displayBounds = currentDisplay.bounds;
+    const newBounds = getClampedRect(winBounds, displayBounds);
 
     const fullyContained =
-      newBounds.width == winBounds.width &&
-      newBounds.height == winBounds.height &&
-      newBounds.x == winBounds.x &&
-      newBounds.y == winBounds.y;
-    
+      newBounds.width === winBounds.width &&
+      newBounds.height === winBounds.height &&
+      newBounds.x === winBounds.x &&
+      newBounds.y === winBounds.y;
     if (fullyContained) {
       return winBounds;
     } else if (clamp) {
-      winBounds = getClampedRect(winBounds, currentDisplay.bounds);
-      win.setBounds(winBounds);
-      return winBounds;
+      win.setBounds(newBounds);
+      return newBounds;
     } else {
       return false;
     }
@@ -125,7 +172,7 @@ if (!gotTheLock) {
     clearTimeout(handleWindowBoundsTimer);
     mainWindow.webContents.send("windowBounds", bounds);
 
-    handleWindowBoundsTimer = setTimeout(function() {
+    handleWindowBoundsTimer = setTimeout(function () {
       const boundsToStore = isFullyContainedInDisplay(bounds, mainWindow, true);
       if (boundsToStore) {
         store.set("x", bounds.x);
@@ -147,7 +194,7 @@ if (!gotTheLock) {
       ipcMain.once("data", (event, data) => {
         response.writeHead(200, {
           "Content-Type": "text/plain",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
         });
 
         // return response
@@ -156,11 +203,11 @@ if (!gotTheLock) {
       });
     });
 
-    server.on("connection", function(socket) {
+    server.on("connection", function (socket) {
       sockets.push(socket);
     });
 
-    server.on("error", e => {
+    server.on("error", (e) => {
       var message;
       if (e.code === "EADDRINUSE") {
         message = `Port ${data.port} is already in use. Choose a different port.`;
@@ -172,22 +219,22 @@ if (!gotTheLock) {
       mainWindow.webContents.send("serverState", serverState);
     });
 
-    server.on("close", e => {
+    server.on("close", (e) => {
       serverState = { error: false, message: "Server closed." };
       mainWindow.webContents.send("serverState", serverState);
     });
 
-    server.on("listening", e => {
+    server.on("listening", (e) => {
       serverState = {
         error: false,
-        message: `Server is listening on http://localhost:${data.port}.`
+        message: `Server is listening on http://localhost:${data.port}.`,
       };
       mainWindow.webContents.send("serverState", serverState);
     });
 
     server.listen(data.port);
 
-    const stopServer = function() {
+    const stopServer = function () {
       server.close();
       while (sockets.length) {
         sockets.pop().destroy();
@@ -205,7 +252,7 @@ if (!gotTheLock) {
     let newMaxScreenWidth = 0,
       newMaxScreenHeight = 0;
     const displays = screen.getAllDisplays();
-    displays.forEach(function(display) {
+    displays.forEach(function (display) {
       if (display.size.width > newMaxScreenWidth) {
         newMaxScreenWidth = display.size.width;
       }
@@ -236,14 +283,14 @@ if (!gotTheLock) {
                 { role: "hideothers" },
                 { role: "unhide" },
                 { type: "separator" },
-                { role: "quit" }
-              ]
-            }
+                { role: "quit" },
+              ],
+            },
           ]
         : []),
       {
         label: "File",
-        submenu: [isMac ? { role: "close" } : { role: "quit" }]
+        submenu: [isMac ? { role: "close" } : { role: "quit" }],
       },
       { role: "editMenu" },
       {
@@ -252,8 +299,8 @@ if (!gotTheLock) {
           { role: "reload" },
           { role: "forcereload" },
           { type: "separator" },
-          { role: "toggledevtools" }
-        ]
+          { role: "toggledevtools" },
+        ],
       },
       { role: "windowMenu" },
       {
@@ -263,10 +310,12 @@ if (!gotTheLock) {
             label: "Learn More",
             click: async () => {
               const { shell } = require("electron");
-              await shell.openExternal("https://github.com/Jip-Hop/Screen-Breach-Sensor");
-            }
-          }
-        ]
+              await shell.openExternal(
+                "https://github.com/Jip-Hop/Screen-Breach-Sensor"
+              );
+            },
+          },
+        ],
       },
       ...(isMac
         ? [
@@ -295,12 +344,12 @@ if (!gotTheLock) {
                         mainWindow.show();
                       }
                     }
-                  }
-                }
-              ]
-            }
+                  },
+                },
+              ],
+            },
           ]
-        : [])
+        : []),
     ];
 
     const menu = Menu.buildFromTemplate(template);
@@ -330,9 +379,9 @@ if (!gotTheLock) {
 
       if (existsSync(extensionsPath)) {
         readdirSync(extensionsPath, { withFileTypes: true })
-          .filter(dirent => dirent.isDirectory())
-          .map(dirent => dirent.name)
-          .forEach(folderName => {
+          .filter((dirent) => dirent.isDirectory())
+          .map((dirent) => dirent.name)
+          .forEach((folderName) => {
             BrowserWindow.addDevToolsExtension(
               path.join(extensionsPath, folderName)
             );
@@ -368,7 +417,7 @@ if (!gotTheLock) {
       resizable: true,
       enableLargerThanScreen: true,
       webPreferences: { nodeIntegration: true, nativeWindowOpen: true },
-      backgroundColor: "#00ffffff"
+      backgroundColor: "#00ffffff",
     });
 
     mainWindow.on("minimize", () => {
@@ -407,7 +456,7 @@ if (!gotTheLock) {
           backgroundColor: "#ffffff",
           hasShadow: true,
           minWidth: 295,
-          title: `${app.name} Settings`
+          title: `${app.name} Settings`,
         });
 
         if (isMac) {
@@ -427,7 +476,7 @@ if (!gotTheLock) {
 
         if (isMac) {
           settingsWindow.setVisibleOnAllWorkspaces(true, {
-            visibleOnFullScreen: true
+            visibleOnFullScreen: true,
           });
           app.dock.show();
         }
@@ -444,7 +493,7 @@ if (!gotTheLock) {
 
         let pairedId = store.get("pairedId", false);
 
-        let result = deviceList.find(device => {
+        let result = deviceList.find((device) => {
           // Connect to device with pairedId, or pair with first device found
           return pairedId ? device.deviceId === pairedId : true;
         });
@@ -478,14 +527,14 @@ if (!gotTheLock) {
       resizable: false,
       closable: false,
       backgroundColor: "#00ffffff",
-      show: isMac
+      show: isMac,
     });
 
     tinyWindow.on("minimize", () => {
       tinyWindow.restore();
     });
 
-    tinyWindow.on("close", event => {
+    tinyWindow.on("close", (event) => {
       if (mainWindow) {
         event.preventDefault();
       }
@@ -554,7 +603,7 @@ if (!gotTheLock) {
   app.on("browser-window-blur", hideIfAutoHide);
   app.on("browser-window-focus", showIfAutoHide);
 
-  app.on("before-quit", event => {
+  app.on("before-quit", (event) => {
     const bounds = mainWindow.getBounds();
     store.set("x", bounds.x);
     store.set("y", bounds.y);
@@ -605,19 +654,19 @@ if (!gotTheLock) {
   }
 
   ipcMain.on("relativeResize", relativeResize);
-  ipcMain.on("serverState", event => {
+  ipcMain.on("serverState", (event) => {
     event.reply("serverState", serverState);
   });
 
-  ipcMain.on("bleCode", event => {
+  ipcMain.on("bleCode", (event) => {
     event.sender.executeJavaScript("window.bleCode()", true);
   });
 
-  ipcMain.on("forgetPairedDevice", event => {
+  ipcMain.on("forgetPairedDevice", (event) => {
     store.set("pairedId", false);
   });
 
-  ipcMain.on("windowBounds", event => {
+  ipcMain.on("windowBounds", (event) => {
     event.reply("windowBounds", mainWindow.getBounds());
   });
 
