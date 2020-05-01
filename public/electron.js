@@ -29,10 +29,10 @@ function clamp(value, min, max) {
 }
 
 function getClampedRect(rect, bounds) {
-  const rectLeft = rect.x;
-  const rectRight = rect.x + rect.width;
-  const rectTop = rect.y;
-  const rectBottom = rect.y + rect.height;
+  var rectLeft = rect.x;
+  var rectRight = rect.x + rect.width;
+  var rectTop = rect.y;
+  var rectBottom = rect.y + rect.height;
 
   const boundsLeft = bounds.x;
   const boundsRight = bounds.x + bounds.width;
@@ -44,54 +44,49 @@ function getClampedRect(rect, bounds) {
   const topDifference = rectTop - boundsTop; // should be >= 0
   const bottomDifference = boundsBottom - rectBottom; // should be >= 0
 
-  var newRectLeft = rectLeft;
-  var newRectRight = rectRight;
-  var newRectTop = rectTop;
-  var newRectBottom = rectBottom;
-
   // Move back to be contained in bounds
   if (leftDifference < 0) {
-    newRectLeft = boundsLeft;
-    newRectRight -= leftDifference;
+    rectLeft = boundsLeft;
+    rectRight -= leftDifference;
   }
 
   if (rightDifference < 0) {
-    newRectRight = boundsRight;
-    newRectLeft += rightDifference;
+    rectRight = boundsRight;
+    rectLeft += rightDifference;
   }
 
   if (topDifference < 0) {
-    newRectTop = boundsTop;
-    newRectBottom -= topDifference;
+    rectTop = boundsTop;
+    rectBottom -= topDifference;
   }
 
   if (bottomDifference < 0) {
-    newRectBottom = boundsBottom;
-    newRectTop += bottomDifference;
+    rectBottom = boundsBottom;
+    rectTop += bottomDifference;
   }
 
   // Clamp to bounds if bigger
-  if (newRectLeft < boundsLeft) {
-    newRectLeft = boundsLeft;
+  if (rectLeft < boundsLeft) {
+    rectLeft = boundsLeft;
   }
 
-  if (newRectRight > boundsRight) {
-    newRectRight = boundsRight;
+  if (rectRight > boundsRight) {
+    rectRight = boundsRight;
   }
 
-  if (newRectTop < newRectTop) {
-    newRectTop = newRectTop;
+  if (rectTop < rectTop) {
+    rectTop = rectTop;
   }
 
-  if (newRectBottom > boundsBottom) {
-    newRectBottom = boundsBottom;
+  if (rectBottom > boundsBottom) {
+    rectBottom = boundsBottom;
   }
 
   const newBounds = {
-    x: newRectLeft,
-    y: newRectTop,
-    width: newRectRight - newRectLeft,
-    height: newRectBottom - newRectTop,
+    x: rectLeft,
+    y: rectTop,
+    width: rectRight - rectLeft,
+    height: rectBottom - rectTop,
   };
 
   return newBounds;
@@ -106,14 +101,6 @@ if (!gotTheLock) {
       mainWindow.show();
     }
   });
-
-  // function getIntersectingRect(r1, r2) {
-  //   var x = Math.max(r1.x, r2.x);
-  //   var y = Math.max(r1.y, r2.y);
-  //   var xx = Math.min(r1.x + r1.width, r2.x + r2.width);
-  //   var yy = Math.min(r1.y + r1.height, r2.y + r2.height);
-  //   return { x: x, y: y, width: xx - x, height: yy - y };
-  // }
 
   function hideIfAutoHide() {
     if (autoHide && !BrowserWindow.getFocusedWindow()) {
