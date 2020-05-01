@@ -462,9 +462,7 @@ if (!gotTheLock) {
         settingsWindow.setAlwaysOnTop(true, "pop-up-menu");
 
         if (isMac) {
-          settingsWindow.setVisibleOnAllWorkspaces(true, {
-            visibleOnFullScreen: true,
-          });
+          settingsWindow.setVisibleOnAllWorkspaces(true);
           app.dock.show();
         }
       }
@@ -538,8 +536,8 @@ if (!gotTheLock) {
     });
 
     if (isMac) {
-      tinyWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-      mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+      tinyWindow.setVisibleOnAllWorkspaces(true);
+      mainWindow.setVisibleOnAllWorkspaces(true);
 
       app.dock.show();
     }
