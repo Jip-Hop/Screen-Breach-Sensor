@@ -20,6 +20,7 @@ const { screen, Menu, MenuItem, app } = remote;
 const fac = new FastAverageColor();
 const settingsWindowTitle = `${app.name} Settings`;
 
+const fps = 30;
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
 const shouldImplementDrag = !isMac;
@@ -43,7 +44,7 @@ const convertArrayToObject = (array, key) => {
   return array.reduce((obj, item) => {
     return {
       ...obj,
-      [item[key]]: item
+      [item[key]]: item,
     };
   }, initialValue);
 };
@@ -74,7 +75,7 @@ function callBleCode() {
 // Plug in or toggle the unit to start pairing.
 // If pairing the Philips Hue Smart Plug does not work,
 // you probably need to reset it to factory defaults with the Hue BT smartphone app
-window.bleCode = function() {
+window.bleCode = function () {
   const component = window.myAppComponent;
 
   if (
@@ -132,10 +133,10 @@ window.bleCode = function() {
   navigator.bluetooth
     .requestDevice({
       filters: [{ name: [component.state.deviceName] }],
-      optionalServices: [bleService]
+      optionalServices: [bleService],
     })
     .then(shouldContinue)
-    .then(device => {
+    .then((device) => {
       component.bluetoothDevice = device;
       component.bluetoothDevice.addEventListener(
         "gattserverdisconnected",
@@ -146,36 +147,36 @@ window.bleCode = function() {
         willPair: false,
         isPaired: true,
         bluetoothState: "connecting",
-        bluetoothStateMessage: "Connecting to bluetooth device..."
+        bluetoothStateMessage: "Connecting to bluetooth device...",
       });
       return device.gatt.connect();
     })
     .then(shouldContinue)
-    .then(server => {
+    .then((server) => {
       component.setState({
         bluetoothState: "success",
-        bluetoothStateMessage: "Getting Service..."
+        bluetoothStateMessage: "Getting Service...",
       });
 
       return server.getPrimaryService(bleService);
     })
     .then(shouldContinue)
-    .then(service => {
+    .then((service) => {
       component.setState({
-        bluetoothStateMessage: "Getting Characteristics..."
+        bluetoothStateMessage: "Getting Characteristics...",
       });
 
       // Get all characteristics.
       return service.getCharacteristics();
     })
     .then(shouldContinue)
-    .then(characteristics => {
+    .then((characteristics) => {
       component.cObj = convertArrayToObject(characteristics, "uuid");
       component.setState({
-        bluetoothStateMessage: "Connected."
+        bluetoothStateMessage: "Connected.",
       });
     })
-    .catch(error => {
+    .catch((error) => {
       if (error.name === "NotFoundError") {
         // Ignore NotFoundError, probably bluetooth is turned off,
         // or no device available for chosen device name
@@ -183,7 +184,7 @@ window.bleCode = function() {
       } else {
         component.setState({
           bluetoothState: "error",
-          bluetoothStateMessage: error.toString()
+          bluetoothStateMessage: error.toString(),
         });
       }
 
@@ -196,18 +197,18 @@ class MyComponent extends PureComponent {
 
   setStateIfChanged = (key, value) => {
     this.setState(
-      function(state) {
+      function (state) {
         // Stop updates and re-renders if value hasn't changed.
         if (state[key] === value) {
           return null;
         }
 
         return {
-          [key]: value
+          [key]: value,
         };
       },
       this.setStateCallbacks[key] instanceof Function
-        ? function() {
+        ? function () {
             this.setStateCallbacks[key](key, value);
           }
         : null
@@ -229,7 +230,7 @@ class ColorPickerInFigure extends MyComponent {
     super(props);
 
     this.state = {
-      editMode: false
+      editMode: false,
     };
   }
 
@@ -249,7 +250,7 @@ class ColorPickerInFigure extends MyComponent {
                 paddingLeft: "5px",
                 border: 0,
                 lineHeight: "unset",
-                verticalAlign: "unset"
+                verticalAlign: "unset",
               }}
               variant="link"
               onClick={() =>
@@ -282,7 +283,7 @@ function CustomFigure(props) {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    borderStyle: "solid"
+    borderStyle: "solid",
   };
 
   var className;
@@ -311,7 +312,7 @@ function CustomFigure(props) {
     <figure
       className="figure"
       style={{
-        float: "left"
+        float: "left",
       }}
     >
       <div style={style} className={className}>
@@ -327,7 +328,7 @@ class TrackingSquare extends MyComponent {
   componentDidMount() {
     if (shouldImplementDrag) {
       const _this = this;
-      window.addEventListener("mousedown", mouseDownEvent => {
+      window.addEventListener("mousedown", (mouseDownEvent) => {
         _this.initialBounds = currentWindow.getBounds();
         _this.pageX = mouseDownEvent.pageX;
         _this.pageY = mouseDownEvent.pageY;
@@ -340,7 +341,7 @@ class TrackingSquare extends MyComponent {
     }
   }
 
-  drag = mouseMoveEvent => {
+  drag = (mouseMoveEvent) => {
     mouseMoveEvent.stopPropagation();
     mouseMoveEvent.preventDefault();
     const { screenX, screenY } = mouseMoveEvent;
@@ -349,7 +350,7 @@ class TrackingSquare extends MyComponent {
       x: screenX - this.pageX,
       y: screenY - this.pageY,
       width: this.initialBounds.width,
-      height: this.initialBounds.height
+      height: this.initialBounds.height,
     });
   };
 
@@ -381,18 +382,18 @@ class TrackingSquare extends MyComponent {
             padding: "1px",
             WebkitAppRegion: shouldImplementDrag ? "no-drag" : "drag",
             WebkitUserSelect: "none",
-            cursor: "move"
+            cursor: "move",
           }}
         >
           <canvas
-            ref={c => {
+            ref={(c) => {
               this.props.setCanvas(c);
             }}
             style={{
               width: "100%",
               height: "100%",
               opacity: 0,
-              display: "block"
+              display: "block",
             }}
           ></canvas>
         </div>
@@ -428,12 +429,10 @@ class Settings extends MyComponent {
     }
 
     return (
-      <NewWindow
-        onUnload={this.props.closeSettingsMenu}
-      >
+      <NewWindow onUnload={this.props.closeSettingsMenu}>
         <Card
           style={{
-            userSelect: "none"
+            userSelect: "none",
           }}
         >
           {isMac && (
@@ -445,7 +444,7 @@ class Settings extends MyComponent {
                 height: "20px",
                 lineHeight: "20px",
                 fontSize: "12px",
-                textAlign: "center"
+                textAlign: "center",
               }}
             >
               {settingsWindowTitle}
@@ -514,7 +513,7 @@ class Settings extends MyComponent {
                 style={{
                   width: "250px",
                   float: "left",
-                  marginRight: "25px"
+                  marginRight: "25px",
                 }}
               >
                 <Form.Check
@@ -554,7 +553,7 @@ class Settings extends MyComponent {
               <div
                 style={{
                   width: "250px",
-                  float: "left"
+                  float: "left",
                 }}
               >
                 <Form.Check
@@ -610,6 +609,7 @@ class App extends MyComponent {
 
     this.currentDisplay = screen.getDisplayMatching(currentWindow.getBounds());
     this.video = document.createElement("video");
+    this.fpsTimer = null;
 
     this.state = {
       color: "#000",
@@ -628,7 +628,7 @@ class App extends MyComponent {
       bluetoothStateMessage: "",
       autoHide: store.get("autoHide", false),
       isPaired: store.get("pairedId", false),
-      willPair: false
+      willPair: false,
     };
   }
 
@@ -640,7 +640,7 @@ class App extends MyComponent {
         id: "showSettings",
         label: "Show Settings",
         type: "checkbox",
-        click: this.toggleMenuItem
+        click: this.toggleMenuItem,
       })
     );
     menu.append(new MenuItem({ type: "separator" }));
@@ -649,14 +649,14 @@ class App extends MyComponent {
         id: "autoHide",
         label: "Auto Hide",
         type: "checkbox",
-        click: this.toggleMenuItem
+        click: this.toggleMenuItem,
       })
     );
     menu.append(new MenuItem({ type: "separator" }));
     menu.append(
       new MenuItem({
         label: "Quit",
-        role: "quit"
+        role: "quit",
       })
     );
 
@@ -672,7 +672,7 @@ class App extends MyComponent {
 
     this.callAllSetStateCallbacks();
 
-    window.oncontextmenu = function(e) {
+    window.oncontextmenu = function (e) {
       e.preventDefault();
       menu.popup({ window: currentWindow });
     };
@@ -695,20 +695,21 @@ class App extends MyComponent {
     const _this = this;
 
     function captureDesktop() {
+      clearTimeout(_this.fpsTimer);
       if (_this.stream) {
-        _this.stream.getTracks().forEach(track => track.stop());
+        _this.stream.getTracks().forEach((track) => track.stop());
       }
       desktopCapturer
         .getSources({
           types: ["screen"],
-          thumbnailSize: { width: 0, height: 0 }
+          thumbnailSize: { width: 0, height: 0 },
         })
-        .then(async sources => {
+        .then(async (sources) => {
           const currentDisplay = screen.getDisplayMatching(
             currentWindow.getBounds()
           );
 
-          var source = sources.find(source => {
+          var source = sources.find((source) => {
             return source.display_id === currentDisplay.id.toString();
           });
 
@@ -730,18 +731,19 @@ class App extends MyComponent {
               mandatory: {
                 chromeMediaSource: "desktop",
                 chromeMediaSourceId: source.id,
-                maxFrameRate: 30,
+                maxFrameRate: fps,
                 maxWidth: _this.currentDisplay.size.width,
                 maxHeight: _this.currentDisplay.size.height,
                 minWidth: _this.currentDisplay.size.width,
-                minHeight: _this.currentDisplay.size.height
-              }
-            }
+                minHeight: _this.currentDisplay.size.height,
+              },
+            },
           });
 
           const video = _this.video;
 
-          video.ontimeupdate = function() {
+          // video.ontimeupdate = function() {
+          _this.fpsTimer = setInterval(function () {
             const currentDisplay = screen.getDisplayMatching(
               currentWindow.getBounds()
             );
@@ -781,7 +783,7 @@ class App extends MyComponent {
 
             const color = fac.getColor(canvas, {
               mode: "precision",
-              algorithm: "simple"
+              algorithm: "simple",
             });
 
             var triggerState =
@@ -804,7 +806,7 @@ class App extends MyComponent {
                 dataview1.setUint8(0, _this.state.triggerState);
                 hueLampCharacteristic
                   .writeValue(dataview1.buffer)
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
@@ -815,7 +817,7 @@ class App extends MyComponent {
               if (esp32TriggerStateCharacteristic) {
                 esp32TriggerStateCharacteristic
                   .writeValue(str2ab(_this.state.triggerState.toString()))
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
@@ -826,7 +828,7 @@ class App extends MyComponent {
               if (esp32AverageColorCharacteristic) {
                 esp32AverageColorCharacteristic
                   .writeValue(str2ab(_this.state.color.toString()))
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
@@ -837,7 +839,7 @@ class App extends MyComponent {
               if (esp32TargetColor0Characteristic) {
                 esp32TargetColor0Characteristic
                   .writeValue(str2ab(_this.state.targetColor0.toString()))
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
@@ -848,7 +850,7 @@ class App extends MyComponent {
               if (esp32TargetColor1Characteristic) {
                 esp32TargetColor1Characteristic
                   .writeValue(str2ab(_this.state.targetColor1.toString()))
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
@@ -856,14 +858,14 @@ class App extends MyComponent {
 
             ipcRenderer.send("data", {
               state: triggerState,
-              color: color.hex
+              color: color.hex,
             });
 
             _this.setStateIfChanged("color", color.hex);
             _this.setStateIfChanged("img", canvas.toDataURL("image/png"));
-          };
+          }, fps);
 
-          video.onloadedmetadata = function() {
+          video.onloadedmetadata = function () {
             video.play();
           };
 
@@ -889,7 +891,7 @@ class App extends MyComponent {
     } else {
       this.setState(
         {
-          willPair: false
+          willPair: false,
         },
         () => {
           clearTimeout(this.bleTimer);
@@ -907,7 +909,7 @@ class App extends MyComponent {
     this.setState(
       {
         isPaired: false,
-        willPair: false
+        willPair: false,
       },
       () => {
         if (this.bluetoothDevice) {
@@ -924,7 +926,7 @@ class App extends MyComponent {
       {
         bluetoothState: "connecting",
         bluetoothStateMessage: "Requesting bluetooth device...",
-        willPair: true
+        willPair: true,
       },
       callBleCode
     );
@@ -955,7 +957,7 @@ class App extends MyComponent {
     this.setStateIfChanged("showSettings", false);
   };
 
-  toggleMenuItem = event => {
+  toggleMenuItem = (event) => {
     const key = event.id;
     const newState = !this.state[key];
     this.setStateIfChanged(key, newState);
@@ -971,22 +973,22 @@ class App extends MyComponent {
     this.menu.getMenuItemById(key).checked = value;
   };
 
-  handleTargetColor0Change = color => {
+  handleTargetColor0Change = (color) => {
     this.setStateIfChanged("targetColor0", color.hex);
   };
 
-  handleTargetColor1Change = color => {
+  handleTargetColor1Change = (color) => {
     this.setStateIfChanged("targetColor1", color.hex);
   };
 
-  handleCheckboxChange = event => {
+  handleCheckboxChange = (event) => {
     const target = event.target;
     const checked = target.checked;
     const name = target.name;
     this.setStateIfChanged(name, checked);
   };
 
-  handleValueChange = event => {
+  handleValueChange = (event) => {
     const target = event.target;
     const name = target.name;
     var value = target.value;
@@ -1005,10 +1007,10 @@ class App extends MyComponent {
     this.setStateIfChanged(name, value);
   };
 
-  setCanvas = canvas => {
+  setCanvas = (canvas) => {
     this.canvas = canvas;
     if (canvas) {
-      canvas.onwheel = function(event) {
+      canvas.onwheel = function (event) {
         ipcRenderer.send("relativeResize", event.deltaY);
       };
     }
