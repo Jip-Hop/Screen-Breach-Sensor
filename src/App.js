@@ -16,6 +16,8 @@ import "./App.css";
 const Store = require("electron-store");
 const store = new Store();
 const { desktopCapturer, remote, ipcRenderer } = require("electron");
+// TODO: move away from using remote
+// https://github.com/electron/electron/issues/21408
 const { screen, Menu, MenuItem, app } = remote;
 const fac = new FastAverageColor();
 const settingsWindowTitle = `${app.name} Settings`;
