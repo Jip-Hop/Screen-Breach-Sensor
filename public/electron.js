@@ -18,7 +18,7 @@ let shouldQuit = false;
 let handleWindowBoundsTimer;
 
 const initialSquareSize = 100;
-const minSquareSize = 50;
+const minSquareSize = 15;
 var maxScreenWidth;
 var maxScreenHeight;
 
@@ -393,11 +393,12 @@ if (!gotTheLock) {
       height: store.get("height", initialSquareSize),
       minWidth: minSquareSize,
       minHeight: minSquareSize,
-      maxWidth: maxScreenWidth,
-      maxHeight: maxScreenHeight,
+      // maxWidth: maxScreenWidth,
+      // maxHeight: maxScreenHeight,
       titleBarStyle: isMac ? "customButtonsOnHover" : undefined,
       frame: false,
       transparent: true,
+      closable: false,
       maximizable: false,
       minimizable: false,
       fullscreenable: false,
@@ -435,6 +436,7 @@ if (!gotTheLock) {
           frame: !isMac, // no frame on MacOS, so it can be shown on top of most full screen apps
           titleBarStyle: isMac ? "hidden" : undefined,
           transparent: false,
+          closable: true,
           movable: true,
           minimizable: false,
           maximizable: true,
@@ -595,6 +597,7 @@ if (!gotTheLock) {
     store.set("width", bounds.width);
     store.set("height", bounds.height);
 
+    mainWindow.closable = true;
     shouldQuit = true;
   });
 
