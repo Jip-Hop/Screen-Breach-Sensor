@@ -864,7 +864,7 @@ class App extends MyComponent {
 
             _this.setStateIfChanged("color", color.hex);
             _this.setStateIfChanged("img", canvas.toDataURL("image/png"));
-          }, fps);
+          }, 1000 / fps);
 
           video.onloadedmetadata = function () {
             video.play();
