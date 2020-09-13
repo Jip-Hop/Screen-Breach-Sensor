@@ -538,8 +538,8 @@ if (!gotTheLock) {
     });
 
     if (isMac) {
-      tinyWindow.setVisibleOnAllWorkspaces(true);
-      mainWindow.setVisibleOnAllWorkspaces(true);
+      tinyWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+      mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
       app.dock.show();
     }
