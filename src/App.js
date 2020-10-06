@@ -8,7 +8,6 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Card from "react-bootstrap/Card";
 import Alert from "react-bootstrap/Alert";
-import { ChromePicker } from "react-color";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -227,7 +226,7 @@ class MyComponent extends PureComponent {
   };
 }
 
-class ColorPickerInFigure extends MyComponent {
+class TargetColorInFigure extends MyComponent {
   constructor(props) {
     super(props);
 
@@ -255,44 +254,13 @@ class ColorPickerInFigure extends MyComponent {
                 verticalAlign: "unset",
               }}
               variant="link"
-              onClick={() =>
-                this.setStateIfChanged("editMode", !this.state.editMode)
-              }
-            >
-              {this.state.editMode ? "Done" : "Edit"}
-            </Button>
-
-            <Button
-              style={{
-                display: "inline",
-                fontSize: "inherit",
-                padding: 0,
-                paddingLeft: "5px",
-                border: 0,
-                lineHeight: "unset",
-                verticalAlign: "unset",
-              }}
-              variant="link"
-              onClick={() =>
-                this.props.handleColorChange()
-              }
+              onClick={() => this.props.handleColorChange()}
             >
               {"Sync"}
             </Button>
-
-
           </Fragment>
         }
-      >
-        {this.state.editMode && (
-          <ChromePicker
-            disableAlpha={true}
-            color={this.props.color}
-            onChange={this.props.handleColorChange}
-            matched={this.props.matched}
-          ></ChromePicker>
-        )}
-      </CustomFigure>
+      ></CustomFigure>
     );
   }
 }
@@ -340,7 +308,7 @@ function CustomFigure(props) {
       <div style={style} className={className}>
         {props.children}
       </div>
-      <p>{props.color}</p>
+      {/* <p>{props.color}</p> */}
 
       <figcaption className="figure-caption">{props.caption}</figcaption>
     </figure>
@@ -489,7 +457,7 @@ class Settings extends MyComponent {
             <div className="clearfix">
               <Card.Title>Target Colors</Card.Title>
 
-              <ColorPickerInFigure
+              <TargetColorInFigure
                 matched={this.props.triggerState === 0}
                 color={this.props.targetColor0}
                 caption={
@@ -498,9 +466,9 @@ class Settings extends MyComponent {
                   </Fragment>
                 }
                 handleColorChange={this.props.handleTargetColor0Change}
-              ></ColorPickerInFigure>
+              ></TargetColorInFigure>
 
-              <ColorPickerInFigure
+              <TargetColorInFigure
                 matched={this.props.triggerState === 1}
                 color={this.props.targetColor1}
                 caption={
@@ -509,7 +477,7 @@ class Settings extends MyComponent {
                   </Fragment>
                 }
                 handleColorChange={this.props.handleTargetColor1Change}
-              ></ColorPickerInFigure>
+              ></TargetColorInFigure>
             </div>
             <div className="clearfix">
               <Card.Title>
@@ -995,14 +963,11 @@ class App extends MyComponent {
     this.menu.getMenuItemById(key).checked = value;
   };
 
-  handleTargetColor0Change = (color) => {
-    // this.setStateIfChanged("targetColor0", color.hex);
-    console.log(this.state.color.hex, this.state);
+  handleTargetColor0Change = () => {
     this.setStateIfChanged("targetColor0", this.state.color);
   };
 
-  handleTargetColor1Change = (color) => {
-    // this.setStateIfChanged("targetColor1", color.hex);
+  handleTargetColor1Change = () => {
     this.setStateIfChanged("targetColor1", this.state.color);
   };
 
