@@ -330,7 +330,19 @@ class TrackingSquare extends MyComponent {
         window.removeEventListener("mousemove", _this.drag);
       });
     }
+
+    document.addEventListener("keydown", this.handleKeyDown);
   }
+
+  handleKeyDown = (event) => {
+    if (event.key === "0") {
+      event.preventDefault();
+      this.props.handleTargetColor0Change();
+    } else if (event.key === "1") {
+      event.preventDefault();
+      this.props.handleTargetColor1Change();
+    }
+  };
 
   drag = (mouseMoveEvent) => {
     mouseMoveEvent.stopPropagation();
@@ -393,7 +405,37 @@ class TrackingSquare extends MyComponent {
   }
 }
 
+class SettingsKeyboardHandler extends MyComponent {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.windowRef.current.window.document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (event) => {
+    if (event.key === "0") {
+      event.preventDefault();
+      this.props.handleTargetColor0Change();
+    } else if (event.key === "1") {
+      event.preventDefault();
+      this.props.handleTargetColor1Change();
+    }
+  };
+
+  render() {
+    return "";
+  }
+}
+
 class Settings extends MyComponent {
+
+  constructor(props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
   render() {
     const isPaired = this.props.isPaired;
     const willPair = this.props.willPair;
@@ -420,7 +462,12 @@ class Settings extends MyComponent {
     }
 
     return (
-      <NewWindow onUnload={this.props.closeSettingsMenu}>
+      <NewWindow onUnload={this.props.closeSettingsMenu} ref={this.ref}>
+        <SettingsKeyboardHandler
+          windowRef={this.ref}
+          handleTargetColor0Change={this.props.handleTargetColor0Change}
+          handleTargetColor1Change={this.props.handleTargetColor1Change}
+        ></SettingsKeyboardHandler>
         <Card
           style={{
             userSelect: "none",
@@ -1013,6 +1060,8 @@ class App extends MyComponent {
           color={this.state.color}
           setStateIfChanged={this.setStateIfChanged}
           setCanvas={this.setCanvas}
+          handleTargetColor0Change={this.handleTargetColor0Change}
+          handleTargetColor1Change={this.handleTargetColor1Change}
         ></TrackingSquare>
         {this.state.showSettings && (
           <Settings
