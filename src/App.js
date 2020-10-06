@@ -331,20 +331,8 @@ class TrackingSquare extends MyComponent {
       });
     }
 
-    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keydown", this.props.handleKeyDown);
   }
-
-  handleKeyDown = (event) => {
-    if(event.ctrlKey || event.metaKey){
-      if (event.key === "0") {
-        event.preventDefault();
-        this.props.handleTargetColor0Change();
-      } else if (event.key === "1") {
-        event.preventDefault();
-        this.props.handleTargetColor1Change();
-      }
-    }
-  };
 
   drag = (mouseMoveEvent) => {
     mouseMoveEvent.stopPropagation();
@@ -415,21 +403,9 @@ class Settings extends MyComponent {
   componentDidMount() {
     this.props.windowRef.current.window.document.addEventListener(
       "keydown",
-      this.handleKeyDown
+      this.props.handleKeyDown
     );
   }
-
-  handleKeyDown = (event) => {
-    if(event.ctrlKey || event.metaKey){
-      if (event.key === "0") {
-        event.preventDefault();
-        this.props.handleTargetColor0Change();
-      } else if (event.key === "1") {
-        event.preventDefault();
-        this.props.handleTargetColor1Change();
-      }
-    }
-  };
 
   render() {
     const isPaired = this.props.isPaired;
@@ -1041,6 +1017,18 @@ class App extends MyComponent {
     }
   };
 
+  handleKeyDown = (event) => {
+    if(event.ctrlKey){
+      if (event.key === "0") {
+        event.preventDefault();
+        this.handleTargetColor0Change();
+      } else if (event.key === "1") {
+        event.preventDefault();
+        this.handleTargetColor1Change();
+      }
+    }
+  };
+
   render() {
     return (
       <Fragment>
@@ -1050,6 +1038,7 @@ class App extends MyComponent {
           setCanvas={this.setCanvas}
           handleTargetColor0Change={this.handleTargetColor0Change}
           handleTargetColor1Change={this.handleTargetColor1Change}
+          handleKeyDown={this.handleKeyDown}
         ></TrackingSquare>
         {this.state.showSettings && (
           <NewWindow onUnload={this.closeSettingsMenu} ref={this.ref}>
@@ -1076,6 +1065,7 @@ class App extends MyComponent {
               handleBluetoothPair={this.handleBluetoothPair}
               bluetoothState={this.state.bluetoothState}
               bluetoothStateMessage={this.state.bluetoothStateMessage}
+              handleKeyDown={this.handleKeyDown}
             ></Settings>
           </NewWindow>
         )}
