@@ -405,13 +405,16 @@ class TrackingSquare extends MyComponent {
   }
 }
 
-class SettingsKeyboardHandler extends MyComponent {
+class Settings extends MyComponent {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    this.props.windowRef.current.window.document.addEventListener("keydown", this.handleKeyDown);
+    this.props.windowRef.current.window.document.addEventListener(
+      "keydown",
+      this.handleKeyDown
+    );
   }
 
   handleKeyDown = (event) => {
@@ -423,18 +426,6 @@ class SettingsKeyboardHandler extends MyComponent {
       this.props.handleTargetColor1Change();
     }
   };
-
-  render() {
-    return "";
-  }
-}
-
-class Settings extends MyComponent {
-
-  constructor(props) {
-    super(props);
-    this.ref = React.createRef();
-  }
 
   render() {
     const isPaired = this.props.isPaired;
@@ -462,180 +453,171 @@ class Settings extends MyComponent {
     }
 
     return (
-      <NewWindow onUnload={this.props.closeSettingsMenu} ref={this.ref}>
-        <SettingsKeyboardHandler
-          windowRef={this.ref}
-          handleTargetColor0Change={this.props.handleTargetColor0Change}
-          handleTargetColor1Change={this.props.handleTargetColor1Change}
-        ></SettingsKeyboardHandler>
-        <Card
-          style={{
-            userSelect: "none",
-          }}
-        >
-          {isMac && (
-            <Card.Header
-              style={{
-                WebkitAppRegion: "drag",
-                WebkitUserSelect: "none",
-                padding: 0,
-                height: "20px",
-                lineHeight: "20px",
-                fontSize: "12px",
-                textAlign: "center",
-              }}
-            >
-              {settingsWindowTitle}
-            </Card.Header>
-          )}
-          <Card.Body>
-            <div className="clearfix">
-              <Card.Title>Live Tracking</Card.Title>
+      <Card
+        style={{
+          userSelect: "none",
+        }}
+      >
+        {isMac && (
+          <Card.Header
+            style={{
+              WebkitAppRegion: "drag",
+              WebkitUserSelect: "none",
+              padding: 0,
+              height: "20px",
+              lineHeight: "20px",
+              fontSize: "12px",
+              textAlign: "center",
+            }}
+          >
+            {settingsWindowTitle}
+          </Card.Header>
+        )}
+        <Card.Body>
+          <div className="clearfix">
+            <Card.Title>Live Tracking</Card.Title>
 
-              <CustomFigure
-                img={this.props.img}
-                caption="Live pixels"
-              ></CustomFigure>
-              <CustomFigure
-                color={this.props.color}
-                caption="Live color"
-              ></CustomFigure>
-            </div>
-            <div className="clearfix">
-              <Card.Title>Target Colors</Card.Title>
+            <CustomFigure
+              img={this.props.img}
+              caption="Live pixels"
+            ></CustomFigure>
+            <CustomFigure
+              color={this.props.color}
+              caption="Live color"
+            ></CustomFigure>
+          </div>
+          <div className="clearfix">
+            <Card.Title>Target Colors</Card.Title>
 
-              <TargetColorInFigure
-                matched={this.props.triggerState === 0}
-                color={this.props.targetColor0}
-                caption={
-                  <Fragment>
-                    Target color <span className="text-monospace">0</span>
-                  </Fragment>
-                }
-                handleColorChange={this.props.handleTargetColor0Change}
-              ></TargetColorInFigure>
+            <TargetColorInFigure
+              matched={this.props.triggerState === 0}
+              color={this.props.targetColor0}
+              caption={
+                <Fragment>
+                  Target color <span className="text-monospace">0</span>
+                </Fragment>
+              }
+              handleColorChange={this.props.handleTargetColor0Change}
+            ></TargetColorInFigure>
 
-              <TargetColorInFigure
-                matched={this.props.triggerState === 1}
-                color={this.props.targetColor1}
-                caption={
-                  <Fragment>
-                    Target color <span className="text-monospace">1</span>
-                  </Fragment>
-                }
-                handleColorChange={this.props.handleTargetColor1Change}
-              ></TargetColorInFigure>
-            </div>
-            <div className="clearfix">
-              <Card.Title>
-                Triggered State:{" "}
+            <TargetColorInFigure
+              matched={this.props.triggerState === 1}
+              color={this.props.targetColor1}
+              caption={
+                <Fragment>
+                  Target color <span className="text-monospace">1</span>
+                </Fragment>
+              }
+              handleColorChange={this.props.handleTargetColor1Change}
+            ></TargetColorInFigure>
+          </div>
+          <div className="clearfix">
+            <Card.Title>
+              Triggered State:{" "}
+              <span className="text-monospace">{this.props.triggerState}</span>
+            </Card.Title>
+            <p>
+              The <em>Live color</em> is closest to{" "}
+              <em>
+                Target color{" "}
                 <span className="text-monospace">
                   {this.props.triggerState}
                 </span>
-              </Card.Title>
-              <p>
-                The <em>Live color</em> is closest to{" "}
-                <em>
-                  Target color{" "}
-                  <span className="text-monospace">
-                    {this.props.triggerState}
-                  </span>
-                </em>
-                .
-              </p>
-            </div>
-            <div className="clearfix">
-              <Card.Title>Connectivity</Card.Title>
+              </em>
+              .
+            </p>
+          </div>
+          <div className="clearfix">
+            <Card.Title>Connectivity</Card.Title>
 
-              <div
-                style={{
-                  width: "250px",
-                  float: "left",
-                  marginRight: "25px",
-                }}
-              >
-                <Form.Check
-                  type="switch"
-                  id="serverEnabled"
-                  name="serverEnabled"
-                  label="HTTP Server"
-                  onChange={this.props.handleCheckboxChange}
-                  checked={this.props.serverEnabled}
+            <div
+              style={{
+                width: "250px",
+                float: "left",
+                marginRight: "25px",
+              }}
+            >
+              <Form.Check
+                type="switch"
+                id="serverEnabled"
+                name="serverEnabled"
+                label="HTTP Server"
+                onChange={this.props.handleCheckboxChange}
+                checked={this.props.serverEnabled}
+              />
+              <Form.Label className="my-1 mr-2 figure-caption">
+                Port number
+              </Form.Label>
+
+              <InputGroup className="mb-3">
+                <Form.Control
+                  type="number"
+                  min="1"
+                  max="65535"
+                  name="portNumber"
+                  onChange={this.props.handleValueChange}
+                  value={this.props.portNumber}
+                  placeholder={defaultPortNumber}
+                  size="sm"
                 />
-                <Form.Label className="my-1 mr-2 figure-caption">
-                  Port number
-                </Form.Label>
+              </InputGroup>
 
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    type="number"
-                    min="1"
-                    max="65535"
-                    name="portNumber"
-                    onChange={this.props.handleValueChange}
-                    value={this.props.portNumber}
-                    placeholder={defaultPortNumber}
-                    size="sm"
-                  />
-                </InputGroup>
-
-                {this.props.serverEnabled && (
-                  <Alert
-                    variant={this.props.serverStateError ? "danger" : "success"}
-                  >
-                    {this.props.serverStateMessage}
-                  </Alert>
-                )}
-              </div>
-
-              <div
-                style={{
-                  width: "250px",
-                  float: "left",
-                }}
-              >
-                <Form.Check
-                  type="switch"
-                  id="bluetoothEnabled"
-                  name="bluetoothEnabled"
-                  label="Bluetooth"
-                  onChange={this.props.handleCheckboxChange}
-                  checked={this.props.bluetoothEnabled}
-                />
-                <Form.Label className="my-1 mr-2 figure-caption">
-                  Device name
-                </Form.Label>
-
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    type="text"
-                    name="deviceName"
-                    onChange={this.props.handleValueChange}
-                    value={this.props.deviceName}
-                    placeholder={defaultDeviceName}
-                    size="sm"
-                    disabled={isPaired || willPair ? true : false}
-                  />
-                  <InputGroup.Append>{button}</InputGroup.Append>
-                </InputGroup>
-                {this.props.bluetoothEnabled && (isPaired || willPair) && (
-                  <Alert
-                    variant={
-                      this.props.bluetoothState === "error"
-                        ? "danger"
-                        : this.props.bluetoothState === "success"
-                        ? "success"
-                        : "warning"
-                    }
-                  >
-                    {this.props.bluetoothStateMessage}
-                  </Alert>
-                )}
-              </div>
+              {this.props.serverEnabled && (
+                <Alert
+                  variant={this.props.serverStateError ? "danger" : "success"}
+                >
+                  {this.props.serverStateMessage}
+                </Alert>
+              )}
             </div>
-          </Card.Body>
-        </Card>
-      </NewWindow>
+
+            <div
+              style={{
+                width: "250px",
+                float: "left",
+              }}
+            >
+              <Form.Check
+                type="switch"
+                id="bluetoothEnabled"
+                name="bluetoothEnabled"
+                label="Bluetooth"
+                onChange={this.props.handleCheckboxChange}
+                checked={this.props.bluetoothEnabled}
+              />
+              <Form.Label className="my-1 mr-2 figure-caption">
+                Device name
+              </Form.Label>
+
+              <InputGroup className="mb-3">
+                <Form.Control
+                  type="text"
+                  name="deviceName"
+                  onChange={this.props.handleValueChange}
+                  value={this.props.deviceName}
+                  placeholder={defaultDeviceName}
+                  size="sm"
+                  disabled={isPaired || willPair ? true : false}
+                />
+                <InputGroup.Append>{button}</InputGroup.Append>
+              </InputGroup>
+              {this.props.bluetoothEnabled && (isPaired || willPair) && (
+                <Alert
+                  variant={
+                    this.props.bluetoothState === "error"
+                      ? "danger"
+                      : this.props.bluetoothState === "success"
+                      ? "success"
+                      : "warning"
+                  }
+                >
+                  {this.props.bluetoothStateMessage}
+                </Alert>
+              )}
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
     );
   }
 }
@@ -668,6 +650,8 @@ class App extends MyComponent {
       isPaired: store.get("pairedId", false),
       willPair: false,
     };
+
+    this.ref = React.createRef();
   }
 
   componentDidMount() {
@@ -1064,30 +1048,32 @@ class App extends MyComponent {
           handleTargetColor1Change={this.handleTargetColor1Change}
         ></TrackingSquare>
         {this.state.showSettings && (
-          <Settings
-            closeSettingsMenu={this.closeSettingsMenu}
-            img={this.state.img}
-            color={this.state.color}
-            triggerState={this.state.triggerState}
-            targetColor0={this.state.targetColor0}
-            handleTargetColor0Change={this.handleTargetColor0Change}
-            targetColor1={this.state.targetColor1}
-            handleTargetColor1Change={this.handleTargetColor1Change}
-            handleCheckboxChange={this.handleCheckboxChange}
-            handleValueChange={this.handleValueChange}
-            serverEnabled={this.state.serverEnabled}
-            portNumber={this.state.portNumber}
-            serverStateError={this.state.serverStateError}
-            serverStateMessage={this.state.serverStateMessage}
-            bluetoothEnabled={this.state.bluetoothEnabled}
-            isPaired={this.state.isPaired}
-            willPair={this.state.willPair}
-            deviceName={this.state.deviceName}
-            handleBluetoothForget={this.handleBluetoothForget}
-            handleBluetoothPair={this.handleBluetoothPair}
-            bluetoothState={this.state.bluetoothState}
-            bluetoothStateMessage={this.state.bluetoothStateMessage}
-          ></Settings>
+          <NewWindow onUnload={this.closeSettingsMenu} ref={this.ref}>
+            <Settings
+              windowRef={this.ref}
+              img={this.state.img}
+              color={this.state.color}
+              triggerState={this.state.triggerState}
+              targetColor0={this.state.targetColor0}
+              handleTargetColor0Change={this.handleTargetColor0Change}
+              targetColor1={this.state.targetColor1}
+              handleTargetColor1Change={this.handleTargetColor1Change}
+              handleCheckboxChange={this.handleCheckboxChange}
+              handleValueChange={this.handleValueChange}
+              serverEnabled={this.state.serverEnabled}
+              portNumber={this.state.portNumber}
+              serverStateError={this.state.serverStateError}
+              serverStateMessage={this.state.serverStateMessage}
+              bluetoothEnabled={this.state.bluetoothEnabled}
+              isPaired={this.state.isPaired}
+              willPair={this.state.willPair}
+              deviceName={this.state.deviceName}
+              handleBluetoothForget={this.handleBluetoothForget}
+              handleBluetoothPair={this.handleBluetoothPair}
+              bluetoothState={this.state.bluetoothState}
+              bluetoothStateMessage={this.state.bluetoothStateMessage}
+            ></Settings>
+          </NewWindow>
         )}
       </Fragment>
     );
