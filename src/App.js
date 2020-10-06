@@ -443,15 +443,15 @@ class Settings extends MyComponent {
           )}
           <Card.Body>
             <div className="clearfix">
-              <Card.Title>Tracking Results</Card.Title>
+              <Card.Title>Live Tracking</Card.Title>
 
               <CustomFigure
                 img={this.props.img}
-                caption="Processed pixels"
+                caption="Live pixels"
               ></CustomFigure>
               <CustomFigure
                 color={this.props.color}
-                caption="Average pixel color"
+                caption="Live color"
               ></CustomFigure>
             </div>
             <div className="clearfix">
@@ -487,7 +487,7 @@ class Settings extends MyComponent {
                 </span>
               </Card.Title>
               <p>
-                The <em>Average pixel color</em> is closest to{" "}
+                The <em>Live color</em> is closest to{" "}
                 <em>
                   Target color{" "}
                   <span className="text-monospace">
