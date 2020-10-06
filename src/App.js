@@ -242,7 +242,11 @@ class TargetColorInFigure extends MyComponent {
         color={this.props.color}
         caption={
           <Fragment>
-            {this.props.caption}
+            {
+              <Fragment>
+                Target color <span className="text-monospace">{this.props.index}</span>
+              </Fragment>
+            }
             <Button
               style={{
                 display: "inline",
@@ -255,6 +259,7 @@ class TargetColorInFigure extends MyComponent {
               }}
               variant="link"
               onClick={() => this.props.handleColorChange()}
+              title={"Shortcut: press CTRL+" + this.props.index + " to sync Live color to Target color " + this.props.index}
             >
               {"Sync"}
             </Button>
@@ -472,22 +477,14 @@ class Settings extends MyComponent {
             <TargetColorInFigure
               matched={this.props.triggerState === 0}
               color={this.props.targetColor0}
-              caption={
-                <Fragment>
-                  Target color <span className="text-monospace">0</span>
-                </Fragment>
-              }
+              index={0}
               handleColorChange={this.props.handleTargetColor0Change}
             ></TargetColorInFigure>
 
             <TargetColorInFigure
               matched={this.props.triggerState === 1}
               color={this.props.targetColor1}
-              caption={
-                <Fragment>
-                  Target color <span className="text-monospace">1</span>
-                </Fragment>
-              }
+              index={1}
               handleColorChange={this.props.handleTargetColor1Change}
             ></TargetColorInFigure>
           </div>
@@ -1018,7 +1015,7 @@ class App extends MyComponent {
   };
 
   handleKeyDown = (event) => {
-    if(event.ctrlKey){
+    if (event.ctrlKey) {
       if (event.key === "0") {
         event.preventDefault();
         this.handleTargetColor0Change();
