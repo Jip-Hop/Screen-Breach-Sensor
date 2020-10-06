@@ -335,12 +335,14 @@ class TrackingSquare extends MyComponent {
   }
 
   handleKeyDown = (event) => {
-    if (event.key === "0") {
-      event.preventDefault();
-      this.props.handleTargetColor0Change();
-    } else if (event.key === "1") {
-      event.preventDefault();
-      this.props.handleTargetColor1Change();
+    if(event.ctrlKey || event.metaKey){
+      if (event.key === "0") {
+        event.preventDefault();
+        this.props.handleTargetColor0Change();
+      } else if (event.key === "1") {
+        event.preventDefault();
+        this.props.handleTargetColor1Change();
+      }
     }
   };
 
@@ -418,12 +420,14 @@ class Settings extends MyComponent {
   }
 
   handleKeyDown = (event) => {
-    if (event.key === "0") {
-      event.preventDefault();
-      this.props.handleTargetColor0Change();
-    } else if (event.key === "1") {
-      event.preventDefault();
-      this.props.handleTargetColor1Change();
+    if(event.ctrlKey || event.metaKey){
+      if (event.key === "0") {
+        event.preventDefault();
+        this.props.handleTargetColor0Change();
+      } else if (event.key === "1") {
+        event.preventDefault();
+        this.props.handleTargetColor1Change();
+      }
     }
   };
 
