@@ -261,6 +261,26 @@ class ColorPickerInFigure extends MyComponent {
             >
               {this.state.editMode ? "Done" : "Edit"}
             </Button>
+
+            <Button
+              style={{
+                display: "inline",
+                fontSize: "inherit",
+                padding: 0,
+                paddingLeft: "5px",
+                border: 0,
+                lineHeight: "unset",
+                verticalAlign: "unset",
+              }}
+              variant="link"
+              onClick={() =>
+                this.props.handleColorChange()
+              }
+            >
+              {"Sync"}
+            </Button>
+
+
           </Fragment>
         }
       >
@@ -320,6 +340,7 @@ function CustomFigure(props) {
       <div style={style} className={className}>
         {props.children}
       </div>
+      <p>{props.color}</p>
 
       <figcaption className="figure-caption">{props.caption}</figcaption>
     </figure>
@@ -975,11 +996,14 @@ class App extends MyComponent {
   };
 
   handleTargetColor0Change = (color) => {
-    this.setStateIfChanged("targetColor0", color.hex);
+    // this.setStateIfChanged("targetColor0", color.hex);
+    console.log(this.state.color.hex, this.state);
+    this.setStateIfChanged("targetColor0", this.state.color);
   };
 
   handleTargetColor1Change = (color) => {
-    this.setStateIfChanged("targetColor1", color.hex);
+    // this.setStateIfChanged("targetColor1", color.hex);
+    this.setStateIfChanged("targetColor1", this.state.color);
   };
 
   handleCheckboxChange = (event) => {
