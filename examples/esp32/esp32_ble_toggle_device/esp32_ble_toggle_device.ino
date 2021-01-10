@@ -1,6 +1,11 @@
 /*
    Based on https://github.com/espressif/arduino-esp32/blob/master/libraries/BLE/examples/BLE_server_multiconnect/BLE_server_multiconnect.ino
 
+   Prerequisites:
+   - Install Arduino IDE
+   - Intall ESP32 board and CP210x USB to UART Bridge VCP Drivers according to this tutorial: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/
+   - Select correct board and port in the Tools menu
+
    Creates a BLE server.
    The service advertises itself as: 932c32bd-0000-47a2-835a-a8d455b859dd
    And has a 4 writable characteristics.
