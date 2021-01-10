@@ -244,7 +244,8 @@ class TargetColorInFigure extends MyComponent {
           <Fragment>
             {
               <Fragment>
-                Target color <span className="text-monospace">{this.props.index}</span>
+                Target color{" "}
+                <span className="text-monospace">{this.props.index}</span>
               </Fragment>
             }
             <Button
@@ -259,7 +260,12 @@ class TargetColorInFigure extends MyComponent {
               }}
               variant="link"
               onClick={() => this.props.handleColorChange()}
-              title={"Shortcut: press CTRL+" + this.props.index + " to sync Live color to Target color " + this.props.index}
+              title={
+                "Shortcut: press CTRL+" +
+                this.props.index +
+                " to sync Live color to Target color " +
+                this.props.index
+              }
             >
               {"Sync"}
             </Button>
@@ -643,6 +649,13 @@ class App extends MyComponent {
       })
     );
     menu.append(new MenuItem({ type: "separator" }));
+    menu.append(
+      new MenuItem({
+        label: "Invert Sensor",
+        accelerator: "CommandOrControl+I",
+        click: this.invertSensor,
+      })
+    );
     menu.append(
       new MenuItem({
         id: "autoHide",
