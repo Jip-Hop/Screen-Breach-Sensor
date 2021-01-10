@@ -287,6 +287,24 @@ if (!gotTheLock) {
               }
             },
           },
+          {
+            label: "Set color 0",
+            accelerator: "CommandOrControl+0",
+            click: () => {
+              if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send("setTargetColor0");
+              }
+            },
+          },
+          {
+            label: "Set color 1",
+            accelerator: "CommandOrControl+1",
+            click: () => {
+              if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send("setTargetColor1");
+              }
+            },
+          },
           { type: "separator" },
           isMac ? { role: "close" } : { role: "quit" },
         ],

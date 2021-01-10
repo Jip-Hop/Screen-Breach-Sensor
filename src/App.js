@@ -261,13 +261,10 @@ class TargetColorInFigure extends MyComponent {
               variant="link"
               onClick={() => this.props.handleColorChange()}
               title={
-                "Shortcut: press CTRL+" +
-                this.props.index +
-                " to sync Live color to Target color " +
-                this.props.index
+                `Shortcut: press ${isMac ? "CMD" : "CTRL"}+${this.props.index} to sync Live color to Target color ${this.props.index}`
               }
             >
-              {"Sync"}
+              {"Set"}
             </Button>
           </Fragment>
         }
@@ -341,8 +338,6 @@ class TrackingSquare extends MyComponent {
         window.removeEventListener("mousemove", _this.drag);
       });
     }
-
-    document.addEventListener("keydown", this.props.handleKeyDown);
   }
 
   drag = (mouseMoveEvent) => {
@@ -411,12 +406,12 @@ class Settings extends MyComponent {
     super(props);
   }
 
-  componentDidMount() {
-    this.props.windowRef.current.window.document.addEventListener(
-      "keydown",
-      this.props.handleKeyDown
-    );
-  }
+  // componentDidMount() {
+  //   this.props.windowRef.current.window.document.addEventListener(
+  //     "keydown",
+  //     this.props.handleKeyDown
+  //   );
+  // }
 
   render() {
     const isPaired = this.props.isPaired;
@@ -670,6 +665,7 @@ class App extends MyComponent {
         click: this.handleTargetColor1Change,
       })
     );
+    menu.append(new MenuItem({ type: "separator" }));
     menu.append(
       new MenuItem({
         id: "autoHide",
@@ -710,6 +706,8 @@ class App extends MyComponent {
 
     ipcRenderer.on("windowBounds", this.handleWindowBounds);
     ipcRenderer.on("invert", this.invertSensor);
+    ipcRenderer.on("setTargetColor0", this.handleTargetColor0Change);
+    ipcRenderer.on("setTargetColor1", this.handleTargetColor1Change);
 
     window.addEventListener("beforeunload", () => {
       ipcRenderer.removeAllListeners("serverState");
@@ -1049,18 +1047,6 @@ class App extends MyComponent {
     }
   };
 
-  handleKeyDown = (event) => {
-    if (event.ctrlKey) {
-      if (event.key === "0") {
-        event.preventDefault();
-        this.handleTargetColor0Change();
-      } else if (event.key === "1") {
-        event.preventDefault();
-        this.handleTargetColor1Change();
-      }
-    }
-  };
-
   render() {
     return (
       <Fragment>
@@ -1070,7 +1056,6 @@ class App extends MyComponent {
           setCanvas={this.setCanvas}
           handleTargetColor0Change={this.handleTargetColor0Change}
           handleTargetColor1Change={this.handleTargetColor1Change}
-          handleKeyDown={this.handleKeyDown}
         ></TrackingSquare>
         {this.state.showSettings && (
           <NewWindow onUnload={this.closeSettingsMenu} ref={this.ref}>
@@ -1097,7 +1082,6 @@ class App extends MyComponent {
               handleBluetoothPair={this.handleBluetoothPair}
               bluetoothState={this.state.bluetoothState}
               bluetoothStateMessage={this.state.bluetoothStateMessage}
-              handleKeyDown={this.handleKeyDown}
             ></Settings>
           </NewWindow>
         )}
