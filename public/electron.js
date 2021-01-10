@@ -277,7 +277,19 @@ if (!gotTheLock) {
         : []),
       {
         label: "File",
-        submenu: [isMac ? { role: "close" } : { role: "quit" }],
+        submenu: [
+          {
+            label: "Invert Sensor",
+            accelerator: "CommandOrControl+I",
+            click: () => {
+              if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send("invert");
+              }
+            },
+          },
+          { type: "separator" },
+          isMac ? { role: "close" } : { role: "quit" },
+        ],
       },
       { role: "editMenu" },
       {

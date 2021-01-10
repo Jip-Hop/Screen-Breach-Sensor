@@ -682,6 +682,7 @@ class App extends MyComponent {
     });
 
     ipcRenderer.on("windowBounds", this.handleWindowBounds);
+    ipcRenderer.on("invert", this.invertSensor);
 
     window.addEventListener("beforeunload", () => {
       ipcRenderer.removeAllListeners("serverState");
@@ -873,6 +874,13 @@ class App extends MyComponent {
 
     captureDesktop();
   }
+
+  invertSensor = (event) => {
+    let targetColor0 = this.state.targetColor0;
+    let targetColor1 = this.state.targetColor1;
+    this.setStateIfChanged("targetColor0", targetColor1);
+    this.setStateIfChanged("targetColor1", targetColor0);
+  };
 
   handleWindowBounds = (event, winBounds) => {
     this.x = winBounds.x;
