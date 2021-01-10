@@ -658,6 +658,20 @@ class App extends MyComponent {
     );
     menu.append(
       new MenuItem({
+        label: "Set color 0",
+        accelerator: "CommandOrControl+0",
+        click: this.handleTargetColor0Change,
+      })
+    );
+    menu.append(
+      new MenuItem({
+        label: "Set color 1",
+        accelerator: "CommandOrControl+1",
+        click: this.handleTargetColor1Change,
+      })
+    );
+    menu.append(
+      new MenuItem({
         id: "autoHide",
         label: "Auto Hide",
         type: "checkbox",
