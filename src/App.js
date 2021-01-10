@@ -677,7 +677,7 @@ class App extends MyComponent {
     menu.append(new MenuItem({ type: "separator" }));
     menu.append(
       new MenuItem({
-        label: "Quit",
+        label: isMac ? "Quit" : "Exit",
         role: "quit",
       })
     );
